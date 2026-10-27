@@ -1,0 +1,33 @@
+menu "Siwar - National Alert Band"
+
+config SIWAR_SCREEN_TIMEOUT_S
+	int "Seconds the screen stays on after a button press"
+	default 10
+
+config SIWAR_CLEAR_HOLD_S
+	int "Seconds the green all-clear light stays on"
+	default 180
+
+config SIWAR_MAX_FAMILY
+	int "Maximum number of family members"
+	default 10
+
+config SIWAR_CBS_CHANNELS
+	string "Cell Broadcast message IDs to listen to"
+	default "4352-4399"
+	help
+	  Public warning (PWS/ETWS/CMAS) message ID range. The exact IDs used by
+	  the Saudi national early-warning system must be confirmed with the
+	  authorities and adjusted here.
+
+config SIWAR_DEV_FAMILY_PHONE
+	string "Development only: a family phone number added on first boot"
+	default ""
+
+config SIWAR_DEV_FAMILY_NAME
+	string "Development only: display name for the development family number"
+	default "Family"
+
+endmenu
+
+source "Kconfig.zephyr"

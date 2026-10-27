@@ -1,0 +1,38 @@
+# بناء نظام السوار تلقائيًا في كل تحديث، والتأكد أنه سليم
+name: Build firmware
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: siwar-firmware
+
+      - name: Set up nRF Connect SDK and Zephyr
+        uses: zephyrproject-rtos/action-zephyr-setup@v1
+        with:
+          app-path: siwar-firmware
+          toolchains: arm-zephyr-eabi
+
+      - name: Install nRF Connect SDK build requirements
+        run: pip install -r nrf/scripts/requirements-build.txt
+
+      - name: Build for Thingy:91 X (development board)
+        run: west build -b thingy91x/nrf9151/ns siwar-firmware --pristine -d build
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: siwar-firmware-thingy91x
+          path: |
+            build/merged.hex
+            build/**/zephyr.hex
+            build/**/zephyr.signed.bin
+          if-no-files-found: warn
